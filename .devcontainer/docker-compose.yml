@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  obs-build-env:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+      # Enable OBS build on container start
+        ENABLE_BUILD: "OFF"  
+      # If ON, the default Build options will be sent to CMake
+      # Defaults: "-DCEF_ROOT_DIR=\"/home/cef_binary_5060_linux_x86_64\" 
+      # -DENABLE_PIPEWIRE=OFF -DENABLE_AJA=0 -DENABLE_WEBRTC=0 
+      #-DQT_VERSION=6"
+      # In all cases, CEF_ROOT_DIR must be set to /home/cef_binary_5060_linux_x86_64
+        CMAKE_DEFAULTS: "OFF"
+      # Custom CMake options, if you want to override the default ones
+      # Please note that the default options will be ignored if this is set      
+      #  CMAKE_OPTIONS: "-DQT_VERSION=6 -DENABLE_WEBRTC=0"  # Custom CMake options
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
