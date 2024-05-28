@@ -15,7 +15,7 @@ The Dockerfile uses the devcontainer image to use with the VSCode Docker and Dev
 - VSCode
 
 Ensure Docker and Docker Compose are installed on your system. For installation instructions, refer to the [official Docker documentation](https://docs.docker.com/get-docker/).
-More info about the devcontainer, refer to the [Devcontainer documentation] (https://containers.dev).
+More info about the devcontainer, refer to the [Devcontainer documentation](https://containers.dev).
 
 
 ### Building the Docker Environment
