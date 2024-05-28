@@ -1,5 +1,4 @@
-#OBS Studio build environment for VSCode by Matheus Tagliari - mptagliari@gmail.com
-
+# OBS Studio build environment for VSCode by Matheus Tagliari - mptagliari@gmail.com
 FROM ubuntu:24.04 as base
 
 # Setup arguments and environment variables
@@ -9,7 +8,10 @@ ARG CMAKE_OPTIONS=""
 ENV ENABLE_BUILD=${ENABLE_BUILD}
 ENV CMAKE_DEFAULTS=${CMAKE_DEFAULTS}
 ENV CMAKE_OPTIONS=${CMAKE_OPTIONS}
-ENV CMAKE_OPTIONS_DEFAULT="-DCEF_ROOT_DIR=\"/home/cef_binary_5060_linux_x86_64\" -DENABLE_PIPEWIRE=OFF -DENABLE_AJA=0 -DENABLE_WEBRTC=0 -DQT_VERSION=6"
+ENV CMAKE_OPTIONS_DEFAULT="-DCEF_ROOT_DIR=\"/home/cef\" -DENABLE_PIPEWIRE=OFF -DENABLE_AJA=0 -DENABLE_WEBRTC=0 -DQT_VERSION=6"
+
+# Create necessary directories
+RUN mkdir -p /home/obs-studio /home/cef /usr/local/cmake-3.29.3-linux-x86_64 
 
 # Install base dependencies
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -73,6 +75,7 @@ RUN wget -O /opt/cmake.sh https://github.com/Kitware/CMake/releases/download/v3.
 # Link CMake binaries
 RUN ln -s /usr/local/cmake-3.29.3-linux-x86_64/bin/* /usr/local/bin/
 
+# Clone OBS Studio
 RUN git clone --recursive https://github.com/obsproject/obs-studio.git /home/obs-studio
 
 # Download and extract CEF
@@ -80,25 +83,20 @@ RUN wget -O /tmp/cef.tar.xz https://cdn-fastly.obsproject.com/downloads/cef_bina
     && tar -xvf /tmp/cef.tar.xz -C /home \
     && rm /tmp/cef.tar.xz
 
-
 WORKDIR /home/obs-studio
 
 # Conditional build steps based on environment variables
 RUN if [ "$ENABLE_BUILD" = "ON" ]; then \
         if [ "$CMAKE_DEFAULTS" = "ON" ]; then \
             cmake -S . -B docker-build -G Ninja ${CMAKE_OPTIONS_DEFAULT}; \
+        elif [ -z "${CMAKE_OPTIONS}" ]; then \
+            echo "No CMAKE_OPTIONS provided, using defaults."; \
+            cmake -S . -B docker-build -G Ninja ${CMAKE_OPTIONS_DEFAULT}; \
         else \
-            if [ -z "${CMAKE_OPTIONS}" ]; then \
-                echo "No CMAKE_OPTIONS provided, using defaults."; \
-                cmake -S . -B docker-build -G Ninja ${CMAKE_OPTIONS_DEFAULT}; \
-            else \
-                echo "Using provided CMAKE_OPTIONS"; \
-                cmake -S . -B docker-build -G Ninja ${CMAKE_OPTIONS}; \
-            fi \
+            echo "Using provided CMAKE_OPTIONS"; \
+            cmake -S . -B docker-build -G Ninja ${CMAKE_OPTIONS}; \
         fi \
     fi
-
-
 
 # Development environment stage
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04 as dev_env
