@@ -1,4 +1,4 @@
-# OBS Studio Development Environment
+# OBS Studio VSCode Development Environment
 
 This repository contains the Docker setup for an OBS Studio development environment using VSCode. It is designed to provide a consistent and controlled development setting using Docker and Docker Compose.
 
@@ -21,8 +21,8 @@ More info about the devcontainer, refer to the [Devcontainer documentation](http
 ### Building the Docker Environment
 
 1. **Clone the repository**:
-   git clone https://yourrepositoryurl.git
-   cd your-repository-directory
+   git clone https://github.com/mptagliari/obs-dockerdev.git
+   cd obs-dockerdev
 
 2. Build and run the Docker environment:
     docker-compose up -d
