@@ -23,7 +23,6 @@ More info about the devcontainer, refer to the [Devcontainer documentation](http
 1. **Clone the repository**:
 ```bash
    git clone https://github.com/mptagliari/obs-dockerdev.git
-
 2. cd obs-dockerdev
 
 3. Build and run the Docker environment:
