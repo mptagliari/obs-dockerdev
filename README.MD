@@ -12,7 +12,7 @@ The Dockerfile uses the devcontainer image to use with the VSCode Docker and Dev
 ### Prerequisites
 
 - Docker
-- VSCode
+- VSCode (Optional but recommended)
 
 Ensure Docker and Docker Compose are installed on your system. For installation instructions, refer to the [official Docker documentation](https://docs.docker.com/get-docker/).
 More info about the devcontainer, refer to the [Devcontainer documentation](https://containers.dev).
@@ -21,10 +21,12 @@ More info about the devcontainer, refer to the [Devcontainer documentation](http
 ### Building the Docker Environment
 
 1. **Clone the repository**:
+```bash
    git clone https://github.com/mptagliari/obs-dockerdev.git
-   cd obs-dockerdev
 
-2. Build and run the Docker environment:
+2. cd obs-dockerdev
+
+3. Build and run the Docker environment:
     docker-compose up -d
    Or if you are using the VSCode, simply use the docker extension to deploy the container
 
