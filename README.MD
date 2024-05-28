@@ -42,10 +42,10 @@ The Docker environment can be customized with several build arguments in the doc
 
 **CMAKE_OPTIONS**: Allows custom CMake options to be specified, overriding the defaults if set.
 
+Available CMake configuration variables can be found in the obs-studio repository at the [CMake build system documentation](https://github.com/obsproject/obs-studio/wiki/building-obs-studio#cmake) section. 
 
-#### IMPORTANT###
+###IMPORTANT
 
-The default CEF download dir on the container is settled to "/home/cef_binary_5060_linux_x86_64".
+The default CEF download directory on the container is set to /home/cef_binary_5060_linux_x86_64.
 
-Remember that if you want to set the cmake options and build obs-studio when the container is buildt, you'll need to either include -DCEF_ROOT_DIR pointing to that directory or setting -DENABLE_BROWSER to OFF
-
+Note: If you want to set the CMake options and build OBS Studio when the container is built, you'll need to either include -DCEF_ROOT_DIR pointing to that directory or set -DENABLE_BROWSER to OFF.
