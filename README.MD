@@ -38,15 +38,15 @@ The Docker environment can be customized with several build arguments in the doc
 
 **CMAKE_DEFAULTS**: When set to "ON", default build options are used for CMake. These are:
 
-    `-DCEF_ROOT_DIR="/home/cef_binary_5060_linux_x86_64" `
+    `-DCEF_ROOT_DIR="/home/cef_binary_5060_linux_x86_64"`
 
-    `-DENABLE_PIPEWIRE=OFF `
+    `-DENABLE_PIPEWIRE=OFF`
 
-    `-DENABLE_AJA=0 `
+    `-DENABLE_AJA=0`
 
-    `-DENABLE_WEBRTC=0 `
+    `-DENABLE_WEBRTC=0`
 
-    `-DQT_VERSION=6 `
+    `-DQT_VERSION=6`
 
 **CMAKE_OPTIONS**: Allows custom CMake options to be specified, overriding the defaults if set.
 
