@@ -2,19 +2,33 @@
     "name": "OBS-Studio Dev",
     "dockerComposeFile": "docker-compose.yml",
     "service": "obs-build-env",
-    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "workspaceFolder": "/home/obs-studio",
+    "updateRemoteUserUID": true,   
+  //  "workspaceFolder": "/workspace",
+    "features": {"ghcr.io/devcontainers-contrib/features/vscode-server:1": {}},
+    "remoteUser": "root",
+    "remoteEnv": {
+        "ENABLE_BUILD": "${localEnv:ENABLE_BUILD}",        
+        "CMAKE_DEFAULTS": "${localEnv:CMAKE_DEFAULTS}",
+        "CMAKE_OPTIONS": "${localEnv:CMAKE_OPTIONS}",
+        "CMAKE_OPTIONS_DEFAULT": "${localEnv:CMAKE_OPTIONS_DEFAULT}"
+    },
+ //   "mounts": [   
+ //       "source=${localWorkspaceFolder}/sub-folder,target=/workspace,type=bind"
+ //       ],
     "customizations": {
         "vscode": {
             "settings": {
                 "terminal.integrated.shell.linux": "/bin/bash",
-                "files.autoSave": "onFocusChange",
-                "extensions": [
-                    "ms-vscode.cpptools-extension-pack",
-                    "ms-vscode.cmake-tools",
-                    "josetr.cmake-language-support-vscode"
-                ]
-            }
-        }   
-    },
-    "remoteUser": "root"
+                "files.autoSave": "onFocusChange"
+                },
+        "extensions": [
+            "ms-vscode.cpptools-extension-pack",
+            "ms-vscode.cmake-tools",
+            "josetr.cmake-language-support-vscode",
+            "mhutchie.git-graph"
+            ]
+        }           
+    }
+    
 }

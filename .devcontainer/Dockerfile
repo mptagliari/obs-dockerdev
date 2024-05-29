@@ -1,5 +1,5 @@
 # OBS Studio build environment for VSCode by Matheus Tagliari - mptagliari@gmail.com
-FROM ubuntu:24.04 as base
+FROM ubuntu:24.04 AS builder
 
 # Setup arguments and environment variables
 ARG ENABLE_BUILD=OFF
@@ -11,61 +11,72 @@ ENV CMAKE_OPTIONS=${CMAKE_OPTIONS}
 ENV CMAKE_OPTIONS_DEFAULT="-DCEF_ROOT_DIR=\"/home/cef\" -DENABLE_PIPEWIRE=OFF -DENABLE_AJA=0 -DENABLE_WEBRTC=0 -DQT_VERSION=6"
 
 # Create necessary directories
-RUN mkdir -p /home/obs-studio /home/cef /usr/local/cmake-3.29.3-linux-x86_64 
+RUN mkdir -p /tmp /home/obs-studio /home/cef /usr/local/cmake-3.29.3-linux-x86_64 
 
-# Install base dependencies
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-&& apt-get install -y \
-ninja-build \
-pkg-config \
-clang-format \
-build-essential \
-curl \
-ccache \
-git \
-wget \
-zsh \
-nano \
-libpulse-dev \
-libavcodec-dev \
-libavdevice-dev \
-libavfilter-dev \
-libavformat-dev \
-libavutil-dev \
-libswresample-dev \
-libswscale-dev \
-libx264-dev \
-libcurl4-openssl-dev \
-libmbedtls-dev \
-libgl1-mesa-dev \
-libjansson-dev \
-libluajit-5.1-dev \
-python3-dev \
-libx11-dev \
-libxcb-randr0-dev \
-libxcb-shm0-dev \
-libxcb-xinerama0-dev \
-libxcb-composite0-dev \
-libxcomposite-dev \
-libxinerama-dev \
-libxcb1-dev \
-libx11-xcb-dev \
-libxcb-xfixes0-dev \
-swig \
-libcmocka-dev \
-libxss-dev \
-libglvnd-dev \
-libgles2-mesa-dev \
-libwayland-dev \
-librist-dev \
-libsrt-openssl-dev \
-libpci-dev \
-libffmpeg-nvenc-dev \
-libpipewire-0.3-dev \
-libqrcodegencpp-dev \
-uthash-dev \
-# Clean up
-&& rm -rf /var/lib/apt/lists/*  
+#Update APT and install wget
+#RUN apt-get update && export DEBIAN_FRONTEND=noninteractive
+#apt-get install -y python3 pipx wget && \
+#pipx ensurepath && pipx install nanolayer
+
+
+# Install base dependencies using nanolayer
+# Nanolayer is a tool that helps you keep your Dockerfile layers small.
+#It does so by automatically deleting any installation leftovers 
+#(such as apt-get update lists, ppas, etc) after the installation is done.
+# https://github.com/devcontainers-contrib/nanolayer
+
+RUN \
+#wget -O /tmp https://github.com/devcontainers-contrib/nanolayer/releases/download/v0.5.6/nanolayer-x86_64-unknown-linux-gnu.tgz && \
+#tar --xvf nanolayer-x86_64-unknown-linux-gnu.tgz && chmod +x /tmp/nanolayer && cd /tmp && \
+    #nanolayer install
+    apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get install -y \
+    ninja-build \
+    pkg-config \
+    clang-format \
+    build-essential \
+    ccache \
+    git \
+    wget \
+    curl \
+    zsh \
+    libpulse-dev \
+    libavcodec-dev \
+    libavdevice-dev \
+    libavfilter-dev \
+    libavformat-dev \
+    libavutil-dev \
+    libswresample-dev \
+    libswscale-dev \
+    libx264-dev \
+    libcurl4-openssl-dev \
+    libmbedtls-dev \
+    libgl1-mesa-dev \
+    libjansson-dev \
+    libluajit-5.1-dev \
+    python3-dev \
+    libx11-dev \
+    libxcb-randr0-dev \
+    libxcb-shm0-dev \
+    libxcb-xinerama0-dev \
+    libxcb-composite0-dev \
+    libxcomposite-dev \
+    libxinerama-dev \
+    libxcb1-dev \
+    libx11-xcb-dev \
+    libxcb-xfixes0-dev \
+    swig \
+    libcmocka-dev \
+    libxss-dev \
+    libglvnd-dev \
+    libgles2-mesa-dev \
+    libwayland-dev \
+    librist-dev \
+    libsrt-openssl-dev \
+    libpci-dev \
+    libffmpeg-nvenc-dev \
+    libpipewire-0.3-dev \
+    libqrcodegencpp-dev \
+    uthash-dev 
 
 # Download and install CMake
 RUN wget -O /opt/cmake.sh https://github.com/Kitware/CMake/releases/download/v3.29.3/cmake-3.29.3-linux-x86_64.sh \
@@ -99,12 +110,15 @@ RUN if [ "$ENABLE_BUILD" = "ON" ]; then \
     fi
 
 # Development environment stage
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04 as dev_env
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04 AS dev_env
 
-COPY --from=base /home/obs-studio /home/obs-studio
-COPY --from=base /usr/local/cmake-3.29.3-linux-x86_64 /usr/local/cmake-3.29.3-linux-x86_64
-COPY --from=base /home/cef /home/cef
+COPY  --from=builder /home/obs-studio /home/obs-studio
+COPY --from=builder /usr/local/cmake-3.29.3-linux-x86_64 /usr/local/cmake-3.29.3-linux-x86_64
+COPY --from=builder /home/cef /home/cef
+# COPY --from=builder /tmp/nanolayer /tmp/nanolayer
 
 RUN ln -s /usr/local/cmake-3.29.3-linux-x86_64/bin/* /usr/local/bin/
+    #cd /tmp && chmod +x /tmp/nanolayer && \
+    #/tmp/nanolayer install devcontainer-feature vscode-server
 
-WORKDIR /home/obs-studio
+
