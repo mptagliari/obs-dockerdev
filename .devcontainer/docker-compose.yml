@@ -15,7 +15,7 @@ services:
       #-DQT_VERSION=6"
       # In all cases, CEF_ROOT_DIR must be set to /home/cef
 
-        CMAKE_DEFAULTS: "ON"
+#        CMAKE_DEFAULTS: "ON"
 
       # Custom CMake options, if you want to override the default ones
       # Remove the comment and specify the options you want to use
