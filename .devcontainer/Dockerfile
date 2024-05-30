@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.2
 
 FROM ubuntu:24.04 as builder
 
@@ -22,7 +21,7 @@ RUN apt-get update && apt-get install -y curl
 
 # Download and extract the file in one RUN command to minimize layer size
 RUN curl -L "https://github.com/devcontainers-contrib/nanolayer/releases/download/v0.5.6/nanolayer-x86_64-unknown-linux-gnu.tgz" -o /tmp/nanolayer.tgz \
-    && tar -xzf /tmp/nanolayer.tgz -C /usr/local/bin \
+    && tar -xzf /tmp/nanolayer.tgz -C /usr/bin \
     && rm /tmp/nanolayer.tgz
 
 # Install base dependencies using nanolayer
@@ -68,12 +67,10 @@ RUN cd /home/obs-studio && \
 
 FROM ubuntu:24.04 AS dev_env
 
-COPY --from=builder \
-  /home/obs-studio /home/obs-studio \
-  /usr/local/cmake-3.29.3-linux-x86_64 /usr/local/cmake-3.29.3-linux-x86_64 \
-  /home/cef_binary_5060_linux_x86_64 /home/cef_binary_5060_linux_x86_64 \
-  /home/dotnet.sh /home/dotnet.sh/  \
-  /usr/local/bin/ /usr/local/bin/
+COPY --from=builder /home/obs-studio /home/obs-studio 
+COPY --from=builder  /usr/local/cmake-3.29.3-linux-x86_64 /usr/local/cmake-3.29.3-linux-x86_64
+COPY --from=builder  /home/cef_binary_5060_linux_x86_64 /home/cef_binary_5060_linux_x86_64 
+COPY --from=builder /usr/bin/nanolayer /usr/bin/nanolayer
 
 #RUN chmod +x /home/dotnet.sh && /home/dotnet.sh --install-dir /usr/local/bin 
 #RUN rm /home/dotnet.sh && \
